@@ -66,7 +66,7 @@ public:
     void Initialize();
     
     // 波特率管理
-    bool SetBaudRate(int new_baud_rate);
+    bool SetBaudRate(int new_baud_rate, int timeout_ms = -1);
     int GetBaudRate() const { return baud_rate_; }
     
     // 数据发送
@@ -83,6 +83,7 @@ public:
     void SetDtrPin(bool high);
     bool GetDtrPin() const { return dtr_pin_state_; }
     bool IsInitialized() const { return initialized_; }
+    void SetDebug(bool enable);
 
     std::string EncodeHex(const std::string& data);
     std::string DecodeHex(const std::string& data);
@@ -99,6 +100,7 @@ private:
     int baud_rate_;
     bool initialized_;
     bool dtr_pin_state_;  // 记录DTR pin的当前状态
+    bool debug_ = false;  // Debug mode flag
     int cme_error_code_ = 0;
     std::string response_;
     bool wait_for_response_ = false;
@@ -124,7 +126,7 @@ private:
     void EventTask();
     void ReceiveTask();
     bool ParseResponse();
-    bool DetectBaudRate();
+    bool DetectBaudRate(int timeout_ms = -1);
     // 处理 URC
     void HandleUrc(const std::string& command, const std::vector<AtArgumentValue>& arguments);
     bool SendData(const char* data, size_t length);
